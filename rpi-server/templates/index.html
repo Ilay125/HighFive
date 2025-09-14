@@ -4,10 +4,20 @@
         <title>HIGH-FIVE!</title>
     </head>
     <body>
-      <form action = "/login" method = "post">
-         <p>Enter Name:</p>
-         <p><input type = "text" name = "nm" /></p>
+      <form action="/" method = "post">
+         <p>Up Servo: <span style="color:red; font-weight:bold;" id="up_out"></span></p>
+   
+         <input type = "range" min="15" max= "180" name="up_slider" id="up_slider" value="{{ up_val }}" />
+
+         <br />
+
+         <p>Down Servo: <span style="color:red; font-weight:bold;" id="down_out"></span></p>
+         
+         <input type = "range" min="15" max= "180" name="down_slider" id="down_slider" value="{{ down_val }}" />
+         
          <p><input type = "submit" value = "submit" /></p>
       </form>
+
+      <script src="{{ url_for('static', filename='script.js') }}"></script>
    </body>
 </html>
