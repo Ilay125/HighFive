@@ -23,8 +23,8 @@
 #define UART_RX_PIN 17
 
 void rest_mode(Servo& up, Servo& down) {
-    up.set_angle(15);
-    down.set_angle(0);
+    up.set_angle(15, false);
+    down.set_angle(0, false);
     sleep_ms(1000);
 }
 
@@ -35,14 +35,13 @@ int main()
     Debug debug;
     debug.blink(3, 200);
 
-    Comm comm(UART_TX_PIN, UART_RX_PIN, 0);
-    printf("STARTING COMMS\n");
-
     Servo servo_down(SERVO_DOWN_PIN, SERVO_FREQ); 
     Servo servo_up(SERVO_UP_PIN, SERVO_FREQ);
 
     rest_mode(servo_up, servo_down);
 
+    Comm comm(UART_TX_PIN, UART_RX_PIN, 0);
+    printf("STARTING COMMS\n");
     
     printf("STARTING A LOOP\n");
     // MAIN LOOP - LISTENER
@@ -56,7 +55,7 @@ int main()
             continue;
         }
 
-        printf("\nGOT A MSG!! %s$$\n", line);
+        printf("\nGOT A MSG!! %s\n", line.c_str());
         comm.split(line, ',', data);
 
         int up_angle = std::stoi(data.at(0));
