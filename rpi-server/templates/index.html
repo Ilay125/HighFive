@@ -15,7 +15,8 @@
          
          <input type = "range" min="15" max= "180" name="down_slider" id="down_slider" value="{{ down_val }}" />
          
-         <p><input type = "submit" value = "submit" /></p>
+         <p><input type="checkbox" name="fast_chk" {% if fast_val %}checked{% endif %}>Fast<p>
+         <p><input type = "submit" value = "move!" /><input type="button" value="sleep" id="sleep"></p>
       </form>
 
       <script src="{{ url_for('static', filename='script.js') }}"></script>

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <cmath>
+#include <string>
 #include "pico/stdlib.h"
 
 #include "wrap/servo.h"
@@ -21,7 +22,7 @@
 #define UART_RX_PIN 17
 
 void rest_mode(Servo& up, Servo& down) {
-    up.set_angle(165);
+    up.set_angle(15);
     down.set_angle(0);
     sleep_ms(1000);
 }
@@ -36,30 +37,63 @@ int main()
     Debug debug;
     debug.blink(3, 200);
 
-    /*
 
     Servo servo_down(SERVO_DOWN_PIN, SERVO_FREQ); 
     Servo servo_up(SERVO_UP_PIN, SERVO_FREQ);
 
-    Button button(BUTTON_PIN, false);
-
-    */
+    rest_mode(servo_up, servo_down);
 
     uart_init(uart0, 115200);
     gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
     gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
 
     printf("STARTING COMMS\n");
-    uart_puts(uart0, "HELLO FROM PICO|");
     sleep_ms(1000);
 
-    printf("MSG SENT\n");
-    while (1) {
-        debug.blink(1,500);
-        uart_puts(uart0, "ping!|");
-    }
+    char buffer[64] = { 0 }; 
+    int idx = 0;
 
-    printf("\nEND!");
+    while (1) {
+        int code = getchar();
+
+        if (code!= PICO_ERROR_TIMEOUT) {
+
+            char c = static_cast<char>(code);
+
+            if (c == '|') {
+                // seperate and use
+                std::string data(buffer);
+
+                int sep_idx = data.find(',');
+                std::string up_val_str = data.substr(0, sep_idx);
+                data = data.substr(sep_idx + 1);
+
+                sep_idx = data.find(',');
+                std::string down_val_str = data.substr(0, sep_idx);
+
+                std::string fast_val_str = data.substr(sep_idx + 1);
+
+                int up_angle = std::stoi(up_val_str);
+                int down_angle = std::stoi(down_val_str);
+                int fast_val = std::stoi(fast_val_str);
+
+                servo_up.set_angle(up_angle, fast_val);
+                servo_down.set_angle(down_angle, fast_val);
+                for (int i = 0; i < idx; i++) {
+                    buffer[i] = 0;
+                }
+
+                idx = 0;
+                continue;
+            }
+
+            buffer[idx++] = c;
+        } else {
+            debug.blink(3, 200);
+            printf("\nPROBLEM!");
+        }
+
+    }
 
     /*
     gpio_init(US_TRIG_PIN);

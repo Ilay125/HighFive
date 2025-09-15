@@ -6,12 +6,13 @@
 #define MIN_PULSE_WIDTH_PER 0.025
 #define MAX_PULSE_WIDTH_PER 0.125
 
+#define SLOW_INCREMENT 5
+
 Servo::Servo(int pin, int f) {
     this->pin = pin;
     this->angle = 0;
     this->freq = f;
     
-
     gpio_set_function(this->pin, GPIO_FUNC_PWM);
 
     int slice_num = pwm_gpio_to_slice_num(this->pin);
@@ -28,13 +29,7 @@ int Servo::get_angle() {
     return this->angle;
 }
 
-void Servo::set_angle(int angle) {
-    if (angle < 0) {
-        angle = 0;
-    } else if (angle > 180) {
-        angle = 180;
-    }
-
+void Servo::_set_angle_fast(int angle) {
     this->angle = angle;
 
     int max_pulse_width = this->slice->get_wrap() * MAX_PULSE_WIDTH_PER;
@@ -46,8 +41,37 @@ void Servo::set_angle(int angle) {
     pwm_set_chan_level(this->slice->get_num(), this->channel, pulse_width);
 }
 
-void Servo::add_angle(int angle) {
-    this->set_angle(this->angle + angle);
+void Servo::_set_angle_slow(int angle) {
+    // Adds angle by small increments
+    int num_of_iter = angle / SLOW_INCREMENT;
+    int remainder = angle % SLOW_INCREMENT;
+
+    for(int i = 0; i < num_of_iter; i++) {
+        this->add_angle(SLOW_INCREMENT, true);
+        sleep_ms(100);
+    }
+
+    this->add_angle(remainder, true);
+}
+
+void Servo::set_angle(int angle, bool fast) {
+    if (angle < 0) {
+        angle = 0;
+    } else if (angle > 180) {
+        angle = 180;
+    }
+
+    this->angle = angle;
+
+    if (fast) {
+        this->_set_angle_fast(angle);
+    } else {
+        this->_set_angle_slow(angle);
+    }
+}
+
+void Servo::add_angle(int angle, bool fast) {
+    this->set_angle(this->angle + angle, fast);
 }
 
 Servo::~Servo() {

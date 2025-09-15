@@ -20,18 +20,32 @@ class Servo {
         Servo(int pin, int f);
 
         /**
-         * @fn set_angle
-         * @brief Set the servo angle.
+         * @fn _set_angle_fast
+         * @brief Set the servo angle fast - might create torque.
          * @param angle Angle in degrees (0 to 180).
          */
-        void set_angle(int angle);
+        void _set_angle_fast(int angle);
+
+        /**
+         * @fn _set_angle_slow
+         * @brief Set the servo angle slow - creates less torque.
+         * @param angle Angle in degrees (0 to 180).
+         */
+        void _set_angle_slow(int angle);
+
+        /**
+         * @fn set_angle
+         * @brief Sets the angle of the servo according to defined speed.
+         * @param angle Angle in degrees (0 to 180).
+         */
+        void set_angle(int angle, bool fast=false);
 
         /**
          * @fn add_angle
          * @brief Add to the current servo angle.
          * @param angle Angle in degrees to add (can be negative).
          */
-        void add_angle(int angle);
+        void add_angle(int angle, bool fast=false);
 
         /**
          * @fn get_pin
