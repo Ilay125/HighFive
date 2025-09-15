@@ -5,7 +5,6 @@ let up_out = document.getElementById("up_out");
 let down_out = document.getElementById("down_out");
 
 let sleep_btn = document.getElementById("sleep");
-let fast_check = document.getElementById("fast");
 
 up_out.innerHTML = up_slider.value;
 down_out.innerHTML = down_slider.value;
@@ -25,4 +24,6 @@ sleep_btn.onclick = function() {
 
     down_out.innerHTML = 0;
     down_slider.value = 0;
+
+    document.forms[0].submit()
 }
