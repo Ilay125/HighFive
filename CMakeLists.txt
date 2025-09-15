@@ -44,14 +44,15 @@ add_executable(sandbox
                 wrap/servo.cpp
                 wrap/slice.cpp
                 wrap/debug.cpp
-                wrap/button.cpp)
+                wrap/button.cpp
+                wrap/comm.cpp)
 
 pico_set_program_name(sandbox "sandbox")
 pico_set_program_version(sandbox "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
 pico_enable_stdio_uart(sandbox 1)
-pico_enable_stdio_usb(sandbox 0)
+pico_enable_stdio_usb(sandbox 1)
 
 # Add the standard library to the build
 target_link_libraries(sandbox

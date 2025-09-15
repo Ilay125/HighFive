@@ -6,6 +6,7 @@
 #include "wrap/servo.h"
 #include "wrap/debug.h"
 #include "wrap/button.h"
+#include "wrap/comm.h"
 
 #define SERVO_DOWN_PIN 0
 #define SERVO_UP_PIN 2
@@ -29,70 +30,43 @@ void rest_mode(Servo& up, Servo& down) {
 
 int main()
 {
-    stdio_init_all();
-
-    printf("Welcom to my pico!\n\n");
-    
+    stdio_init_all();    
 
     Debug debug;
     debug.blink(3, 200);
 
+    Comm comm(UART_TX_PIN, UART_RX_PIN, 0);
+    printf("STARTING COMMS\n");
 
     Servo servo_down(SERVO_DOWN_PIN, SERVO_FREQ); 
     Servo servo_up(SERVO_UP_PIN, SERVO_FREQ);
 
     rest_mode(servo_up, servo_down);
 
-    uart_init(uart0, 115200);
-    gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
-    gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
-
-    printf("STARTING COMMS\n");
-    sleep_ms(1000);
-
-    char buffer[64] = { 0 }; 
-    int idx = 0;
+    
+    printf("STARTING A LOOP\n");
+    // MAIN LOOP - LISTENER
+    std::vector<std::string> data;
 
     while (1) {
-        int code = getchar();
-
-        if (code!= PICO_ERROR_TIMEOUT) {
-
-            char c = static_cast<char>(code);
-
-            if (c == '|') {
-                // seperate and use
-                std::string data(buffer);
-
-                int sep_idx = data.find(',');
-                std::string up_val_str = data.substr(0, sep_idx);
-                data = data.substr(sep_idx + 1);
-
-                sep_idx = data.find(',');
-                std::string down_val_str = data.substr(0, sep_idx);
-
-                std::string fast_val_str = data.substr(sep_idx + 1);
-
-                int up_angle = std::stoi(up_val_str);
-                int down_angle = std::stoi(down_val_str);
-                int fast_val = std::stoi(fast_val_str);
-
-                servo_up.set_angle(up_angle, fast_val);
-                servo_down.set_angle(down_angle, fast_val);
-                for (int i = 0; i < idx; i++) {
-                    buffer[i] = 0;
-                }
-
-                idx = 0;
-                continue;
-            }
-
-            buffer[idx++] = c;
-        } else {
-            debug.blink(3, 200);
-            printf("\nPROBLEM!");
+        std::string line;
+        if (comm.get_msg(line)) {
+            printf("NOOOOOO\n");
+            debug.blink(5, 200);
+            continue;
         }
 
+        printf("\nGOT A MSG!! %s$$\n", line);
+        comm.split(line, ',', data);
+
+        int up_angle = std::stoi(data.at(0));
+        int down_angle = std::stoi(data.at(1));
+        int is_fast = std::stoi(data.at(2));
+
+        servo_up.set_angle(up_angle, is_fast);
+        servo_down.set_angle(down_angle, is_fast);
+
+        data.clear();
     }
 
     /*

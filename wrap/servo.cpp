@@ -1,3 +1,4 @@
+#include <cmath>
 #include "servo.h"
 #include "hardware/pwm.h"
 #include "pico/stdlib.h"
@@ -42,16 +43,18 @@ void Servo::_set_angle_fast(int angle) {
 }
 
 void Servo::_set_angle_slow(int angle) {
-    // Adds angle by small increments
-    int num_of_iter = angle / SLOW_INCREMENT;
-    int remainder = angle % SLOW_INCREMENT;
+    int current = this->angle;
 
-    for(int i = 0; i < num_of_iter; i++) {
-        this->add_angle(SLOW_INCREMENT, true);
-        sleep_ms(100);
+    int step = (current < angle) ? SLOW_INCREMENT : -SLOW_INCREMENT;
+
+    while (abs(angle - current) > SLOW_INCREMENT) {
+        current += step;
+        this->_set_angle_fast(current);
+        sleep_ms(500);  // adjust for speed
     }
 
-    this->add_angle(remainder, true);
+    // Sets final angle exactly
+    this->_set_angle_fast(angle);
 }
 
 void Servo::set_angle(int angle, bool fast) {
