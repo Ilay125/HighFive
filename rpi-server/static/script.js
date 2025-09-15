@@ -4,7 +4,7 @@ let down_slider = document.getElementById("down_slider");
 let up_out = document.getElementById("up_out");
 let down_out = document.getElementById("down_out");
 
-let sleep_btn = document.getElementById("sleep");
+let sleep_btn = document.getElementById("sleep_btn");
 
 up_out.innerHTML = up_slider.value;
 down_out.innerHTML = down_slider.value;
