@@ -19,11 +19,13 @@ down_slider.oninput = function() {
 
 
 sleep_btn.onclick = function() {
-    up_out.innerHTML = 15;
+    console.log("sleep pressed");
+
     up_slider.value = 15;
+    down_slider.value = 15;
 
-    down_out.innerHTML = 0;
-    down_slider.value = 0;
-
+    up_out.innerHTML = up_slider.value;
+    down_out.innerHTML = down_slider.value;
+    
     document.forms[0].submit()
 }

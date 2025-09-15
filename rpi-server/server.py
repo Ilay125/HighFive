@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 def fancy_uart(*args):
     up_val, down_val, fast_val = args
-    ser.write(f"{up_val},{down_val},{fast_val}|".encode())
+    #ser.write(f"{up_val},{down_val},{fast_val}|".encode())
     time.sleep(0.5)
     print(f"up servo={up_val}, down servo={down_val}, fast={fast_val}")
 

@@ -5,18 +5,26 @@
     </head>
     <body>
       <form action="/" method = "post">
-         <p>Up Servo: <span style="color:red; font-weight:bold;" id="up_out"></span></p>
+         <p>Up Servo:
+            <span style="color:red; font-weight:bold;" id="up_out"></span>
+         </p>
    
          <input type = "range" min="15" max= "180" name="up_slider" id="up_slider" value="{{ up_val }}" />
 
          <br />
 
-         <p>Down Servo: <span style="color:red; font-weight:bold;" id="down_out"></span></p>
+         <p>Down Servo:
+            <span style="color:red; font-weight:bold;" id="down_out"></span>
+         </p>
          
          <input type = "range" min="15" max= "180" name="down_slider" id="down_slider" value="{{ down_val }}" />
          
          <p><input type="checkbox" name="fast_chk" {% if fast_val %}checked{% endif %}>Fast<p>
-         <p><input type = "submit" value = "move!" /><input type="button" value="sleep" id="sleep"></p>
+            
+         <p>
+            <input type = "submit" value = "move!" />
+            <button type="button" id="sleep">sleep</button>
+         </p>
       </form>
 
       <script src="{{ url_for('static', filename='script.js') }}"></script>
