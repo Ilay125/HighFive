@@ -7,25 +7,31 @@ ser = serial.Serial('/dev/serial0', 115200, timeout=1)
 app = Flask(__name__)
 
 # DATA PASS BETWEEN THREADS
-DATA = {}
+DATA = {"us_dist": 0}
 
 # CONST
 END_LINE = '|'
 
 def process_msg(msg):
+    print("got a msg: {msg}. isnum={msg.isnumeric()}")
     if msg.isnumeric():
         DATA["us_dist"] = round(float(msg), 3) 
 
 def uart_listener():
+    print("Listening...")
+
     buffer = ""
 
     while True:
         c = ser.read().decode()
 
+        print(f"got a char - {c}")
+
         if not c:
             continue
 
         if c == END_LINE:
+            print(f"line ended - ${buffer}$")
             process_msg(buffer)
             buffer = ""
             continue

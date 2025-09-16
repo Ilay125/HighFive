@@ -58,6 +58,9 @@ int main()
         }
 
         printf("\nGOT A MSG!! %s\n", line.c_str());
+
+        comm.send_msg("6969");
+        
         comm.split(line, ',', data);
 
         int up_angle = std::stoi(data.at(0));
