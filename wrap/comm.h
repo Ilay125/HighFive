@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include "hardware/uart.h"
 
 #define BUFFER_SIZE 65
 #define BAUDRATE 115200
@@ -12,7 +13,7 @@
 class Comm {
     char buffer[BUFFER_SIZE];
     int buf_idx;
-    int uart_num;
+    uart_inst_t* uart_channel;
 
     public:
         /**

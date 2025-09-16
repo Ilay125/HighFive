@@ -67,10 +67,8 @@ void Servo::set_angle(int ang, bool fast) {
     }
 
     if (fast) {
-        printf("need for speed\n");
         this->_set_angle_fast(ang);
     } else {
-        printf("need for slow?\n");
         this->_set_angle_slow(ang);
     }
 

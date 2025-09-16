@@ -12,31 +12,21 @@ DATA = {"us_dist": 0}
 # CONST
 END_LINE = '|'
 
-def process_msg(msg):
-    print("got a msg: {msg}. isnum={msg.isnumeric()}")
-    if msg.isnumeric():
-        DATA["us_dist"] = round(float(msg), 3) 
+def process_msg(msg_buffer):
+    for msg in msg_buffer:
+        try:
+            DATA["us_dist"] = round(float(msg), 3)
+        except ValueError:
+            print("ERROR: tried to convert {msg} to float")
+            return
 
 def uart_listener():
     print("Listening...")
 
-    buffer = ""
-
     while True:
-        c = ser.read().decode()
-
-        print(f"got a char - {c}")
-
-        if not c:
-            continue
-
-        if c == END_LINE:
-            print(f"line ended - ${buffer}$")
-            process_msg(buffer)
-            buffer = ""
-            continue
-
-        buffer += c 
+        data_buff = ser.readline().decode().strip().split(END_LINE)
+        print("Got msg {data_buff}")
+        process_msg(data_buff)
 
 def fancy_uart(*args):
     up_val, down_val, fast_val = args
