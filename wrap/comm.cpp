@@ -55,9 +55,6 @@ int Comm::get_msg(std::string& data) {
 void Comm::send_msg(std::string data) {
     data += ENDLINE;
     data += '\n';
-
-    printf("lets send %s :)", data.c_str());
-
     uart_puts(this->uart_channel, data.c_str());
 }
 

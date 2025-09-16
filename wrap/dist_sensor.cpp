@@ -1,6 +1,9 @@
 #include "dist_sensor.h"
 #include "pico/stdlib.h"
 
+#include <sstream>
+#include <iomanip>
+
 
 DistSensor::DistSensor(int trigger_pin, int echo_pin) {
     this->trigger_pin = trigger_pin;
@@ -41,4 +44,11 @@ float DistSensor::measure() {
     float dist = SPEED_OF_SOUND * delta_t;
 
     return dist;
+}
+
+std::string DistSensor::measure_to_str(int precision, std::string prefix) {
+    float dist = this->measure();
+    std::ostringstream s;
+    s << prefix <<std::fixed << std::setprecision(precision) << dist;
+    return s.str();
 }

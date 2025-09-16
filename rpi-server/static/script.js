@@ -1,3 +1,5 @@
+/* LOGIC FOR FORM */
+
 let up_slider = document.getElementById("up_slider");
 let down_slider = document.getElementById("down_slider");
 
@@ -29,3 +31,10 @@ sleep_btn.onclick = function() {
     
     document.forms[0].submit()
 }
+
+/* SOCKETIO LOGIC FOR SENSOR */
+let socket = io();
+
+socket.on('us_update', function(data) {
+    document.getElementById('us_data').innerHTML = data;
+});

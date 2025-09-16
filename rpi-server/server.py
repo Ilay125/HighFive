@@ -1,10 +1,12 @@
 from flask import Flask, redirect, url_for, request, render_template
+from flask_socketio import SocketIO
 import serial
 import time
 import threading
 
 ser = serial.Serial('/dev/serial0', 115200, timeout=1)
 app = Flask(__name__)
+socketio = SocketIO(app)
 
 # DATA PASS BETWEEN THREADS
 DATA = {"us_dist": 0}
@@ -14,12 +16,10 @@ END_LINE = '|'
 
 def process_msg(msg_buffer):
     for msg in msg_buffer:
-        try:
-            if msg.startswith("us"):
-                DATA["us_dist"] = round(float(msg[3:]), 3)
-        except ValueError:
-            print(f"ERROR: tried to convert {msg} to float")
-            return
+        if msg.startswith("us"):
+            DATA["us_dist"] = round(float(msg[2:]), 3)
+            socketio.emit('us_update', DATA["us_dist"])
+
 
 def uart_listener():
     print("Listening...")
@@ -31,7 +31,9 @@ def uart_listener():
             continue
 
         data_buff = data.split(END_LINE)
-        data_buff.pop()
+
+        if data_buff[-1] == '':
+            data_buff.pop()
         
         #print(f"Got msg {data_buff}")
         process_msg(data_buff)
@@ -68,6 +70,4 @@ def main():
 
 if __name__ == '__main__':
     t = threading.Thread(target=uart_listener).start()
-
-    app.run(host="0.0.0.0", port=5000, debug=True)
-    ser.close()
+    socketio.run(host="0.0.0.0", port=5000, debug=True)

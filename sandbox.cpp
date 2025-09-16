@@ -82,11 +82,12 @@ int main()
         }
 
         // NOTHING
-        float dist_mes = std::round(dist.measure() * 1000) / 1000;
-        std::string dist_str = "us";
-        dist_str += dist_mes;
+        std::string dist_str = dist.measure_to_str(3, "us"); 
 
+        printf("sending %s\n", dist_str.c_str());
         comm.send_msg(dist_str);
+
+        sleep_ms(1000);
     }
 
 

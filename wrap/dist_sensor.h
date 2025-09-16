@@ -1,6 +1,9 @@
 #ifndef __DIST_SENSOR__
 #define __DIST_SENSOR__
 
+#include <string>
+
+
 #define SPEED_OF_SOUND 34300 // [cm/s] 
 #define MAX_DIST 25 // [cm]
 
@@ -11,6 +14,7 @@ class DistSensor {
     public:
         DistSensor(int trigger_pin, int echo_pin);
         float measure();
+        std::string measure_to_str(int precision, std::string prefix="");
 };
 
 #endif
