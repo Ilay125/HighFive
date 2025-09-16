@@ -21,21 +21,25 @@ void Comm::clean_buffer() {
 }
 
 int Comm::get_msg(std::string& data) {
-    int c = getchar();
+    if (!uart_is_readable(this->uart_channel)) {
+        return 0;
+    }
+
+    int c = uart_getc(this->uart_channel);
 
     while (this->buf_idx < BUFFER_SIZE - 1 && c != ENDLINE) {
         if (c == EOF || c == PICO_ERROR_TIMEOUT) {
-            return 1;
+            return 2;
         }
 
         this->buffer[this->buf_idx++] = c;
-
-        c = getchar();
+        
+        c = uart_getc(this->uart_channel);
     }
 
     if (this->buf_idx >= BUFFER_SIZE - 1) {
         this->clean_buffer();
-        return 1;
+        return 2;
     }
 
     this->buffer[this->buf_idx] = '\0';
@@ -45,13 +49,14 @@ int Comm::get_msg(std::string& data) {
 
     this->clean_buffer();
 
-    return 0;
+    return 1;
 }
 
 void Comm::send_msg(std::string data) {
-    data += ENDLINE + '\n';
+    data += ENDLINE;
+    data += '\n';
 
-    printf("lets send %s", data.c_str());
+    printf("lets send %s :)", data.c_str());
 
     uart_puts(this->uart_channel, data.c_str());
 }

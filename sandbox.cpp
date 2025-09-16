@@ -7,6 +7,7 @@
 #include "wrap/debug.h"
 #include "wrap/button.h"
 #include "wrap/comm.h"
+#include "wrap/dist_sensor.h"
 
 #define SERVO_DOWN_PIN 0
 #define SERVO_UP_PIN 2
@@ -19,8 +20,8 @@
 
 #define PEN_LEN 13 // in cm
 
-#define UART_TX_PIN 16
-#define UART_RX_PIN 17
+#define UART_TX_PIN 20
+#define UART_RX_PIN 21
 
 void rest_mode(Servo& up, Servo& down) {
     up.set_angle(15, false);
@@ -30,7 +31,7 @@ void rest_mode(Servo& up, Servo& down) {
 
 int main()
 {
-    stdio_init_all();    
+    stdio_usb_init();    
 
     Debug debug;
     debug.blink(3, 200);
@@ -40,37 +41,52 @@ int main()
 
     rest_mode(servo_up, servo_down);
 
-    Comm comm(UART_TX_PIN, UART_RX_PIN, 0);
+    DistSensor dist(US_TRIG_PIN, US_ECHO_PIN);
+
+    Comm comm(UART_TX_PIN, UART_RX_PIN, 1);
     printf("STARTING COMMS\n");
     
     printf("STARTING A LOOP\n");
     // MAIN LOOP - LISTENER
     std::vector<std::string> data;
 
-    comm.send_msg("6969");
+    //comm.send_msg("HELLUR");
 
     while (1) {
         std::string line;
-        if (comm.get_msg(line)) {
+        int get_msg_code = comm.get_msg(line);
+
+        // ERROR
+        if (get_msg_code == 2) {
             printf("NOOOOOO\n");
             debug.blink(5, 200);
             continue;
         }
 
-        printf("\nGOT A MSG!! %s\n", line.c_str());
+        // GOT A MSG
+        if (get_msg_code == 1) {
+            printf("\nGOT A MSG!! %s\n", line.c_str());
 
-        comm.send_msg("6969");
-        
-        comm.split(line, ',', data);
+            comm.split(line, ',', data);
 
-        int up_angle = std::stoi(data.at(0));
-        int down_angle = std::stoi(data.at(1));
-        int is_fast = std::stoi(data.at(2));
+            int up_angle = std::stoi(data.at(0));
+            int down_angle = std::stoi(data.at(1));
+            int is_fast = std::stoi(data.at(2));
 
-        servo_up.set_angle(up_angle, is_fast);
-        servo_down.set_angle(down_angle, is_fast);
+            servo_up.set_angle(up_angle, is_fast);
+            servo_down.set_angle(down_angle, is_fast);
 
-        data.clear();
+            data.clear();
+
+            continue;
+        }
+
+        // NOTHING
+        float dist_mes = std::round(dist.measure() * 1000) / 1000;
+        std::string dist_str = "us";
+        dist_str += dist_mes;
+
+        comm.send_msg(dist_str);
     }
 
 

@@ -29,10 +29,16 @@ class Comm {
          * @fn get_msg
          * @brief receives a message and parse it to string.
          * @param[out] data a reference that will be updated with the new string.
-         * @return error code.
+         * @return 0 if got nothing, 1 if got something, 2 on error.
          */
         int get_msg(std::string& data);
 
+        /**
+         * @fn sends_msg
+         * @brief sends a message. adding char to simbolize ENDLINE to
+         *        preven hiccups of comms and also adds '\n' at the end.
+         * @param data a string to send
+         */
         void send_msg(std::string data);
 
         /**

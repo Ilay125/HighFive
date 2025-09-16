@@ -15,7 +15,8 @@ END_LINE = '|'
 def process_msg(msg_buffer):
     for msg in msg_buffer:
         try:
-            DATA["us_dist"] = round(float(msg), 3)
+            if msg.startswith("us"):
+                DATA["us_dist"] = round(float(msg[3:]), 3)
         except ValueError:
             print(f"ERROR: tried to convert {msg} to float")
             return
@@ -30,8 +31,9 @@ def uart_listener():
             continue
 
         data_buff = data.split(END_LINE)
+        data_buff.pop()
         
-        print(f"Got msg {data_buff}")
+        #print(f"Got msg {data_buff}")
         process_msg(data_buff)
 
 def fancy_uart(*args):
