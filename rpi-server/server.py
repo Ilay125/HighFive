@@ -17,15 +17,21 @@ def process_msg(msg_buffer):
         try:
             DATA["us_dist"] = round(float(msg), 3)
         except ValueError:
-            print("ERROR: tried to convert {msg} to float")
+            print(f"ERROR: tried to convert {msg} to float")
             return
 
 def uart_listener():
     print("Listening...")
 
     while True:
-        data_buff = ser.readline().decode().strip().split(END_LINE)
-        print("Got msg {data_buff}")
+        data = ser.readline().decode().strip()
+        if not data:
+            time.sleep(0.01)
+            continue
+
+        data_buff = data.split(END_LINE)
+        
+        print(f"Got msg {data_buff}")
         process_msg(data_buff)
 
 def fancy_uart(*args):
