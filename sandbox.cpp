@@ -47,6 +47,8 @@ int main()
     // MAIN LOOP - LISTENER
     std::vector<std::string> data;
 
+    comm.send_msg("6969");
+
     while (1) {
         std::string line;
         if (comm.get_msg(line)) {
@@ -68,71 +70,8 @@ int main()
         data.clear();
     }
 
-    /*
-    gpio_init(US_TRIG_PIN);
-    gpio_set_dir(US_TRIG_PIN, GPIO_OUT);
-
-    gpio_init(US_ECHO_PIN);
-    gpio_set_dir(US_ECHO_PIN, GPIO_IN);
-
-    rest_mode(servo_up, servo_down);
-    
-    sleep_ms(2000);
-    
-    while (1) {
-
-        if (button.is_pressed()) {
-            debug.set(1);
-            rest_mode(servo_up, servo_down);
-            sleep_ms(3000);
-            debug.set(0);
-
-            continue;
-        }
 
 
-        gpio_put(US_TRIG_PIN, 1);
-        busy_wait_us_32(10);
-        gpio_put(US_TRIG_PIN, 0);
-
-        while(!gpio_get(US_ECHO_PIN)) {
-            busy_wait_us_32(1);
-        }
-
-        uint32_t start_time = time_us_64();
-
-        while(gpio_get(US_ECHO_PIN)) {
-            busy_wait_us_32(1);
-        }
-
-        uint32_t end_time = time_us_64();
-
-        uint32_t time_travel = end_time - start_time;
-
-        float dist_cm_exact = time_travel / 2 * 0.034;
-
-        int dist_cm = std::round(dist_cm_exact);
-
-        dist_cm = dist_cm > 25 ? 25 : dist_cm;
-
-        double angle_f = std::asin( dist_cm_exact / (2 * PEN_LEN) ) * 180 / 3.14;
-
-        int angle = std::round(angle_f);
-
-        printf("dist [cm]=%d, angle [deg]=%d\n", dist_cm, angle);
-
-
-        
-        servo_down.set_angle(angle);
-        servo_up.set_angle(180 - 2 * angle);
-        
-        sleep_ms(500);
-
-    }
-
-    */
-    
-    
     
     return 0;
 }

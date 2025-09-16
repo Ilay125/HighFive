@@ -12,6 +12,7 @@
 class Comm {
     char buffer[BUFFER_SIZE];
     int buf_idx;
+    int uart_num;
 
     public:
         /**
@@ -30,6 +31,8 @@ class Comm {
          * @return error code.
          */
         int get_msg(std::string& data);
+
+        void send_msg(std::string data);
 
         /**
          * @fn clean_buffer

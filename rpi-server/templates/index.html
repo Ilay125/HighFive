@@ -26,6 +26,10 @@
             <button type="button" id="sleep_btn">sleep</button>
          </p>
       </form>
+      <br />
+      <p>Ultrasonic distance: 
+         <span style="color:red; font-weight: bold" id="us_data">{{ us_dist }}</span>
+      </p>
 
       <script src="{{ url_for('static', filename='script.js') }}"></script>
    </body>

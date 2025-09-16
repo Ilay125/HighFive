@@ -45,7 +45,8 @@ add_executable(sandbox
                 wrap/slice.cpp
                 wrap/debug.cpp
                 wrap/button.cpp
-                wrap/comm.cpp)
+                wrap/comm.cpp
+                wrap/dist_sensor.cpp)
 
 pico_set_program_name(sandbox "sandbox")
 pico_set_program_version(sandbox "0.1")

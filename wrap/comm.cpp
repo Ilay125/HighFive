@@ -2,11 +2,9 @@
 #include "pico/stdlib.h"
 
 Comm::Comm(int tx_pin, int rx_pin, int uart_num) {
-    if (uart_num != 1) {
-        uart_num = 0;
-    }
+    this->uart_num = uart_num == 1;
 
-    uart_init(uart_num ? uart1 : uart0, BAUDRATE);
+    uart_init(this->uart_num ? uart1 : uart0, BAUDRATE);
 
     gpio_set_function(tx_pin, GPIO_FUNC_UART);
     gpio_set_function(rx_pin, GPIO_FUNC_UART);
@@ -48,6 +46,12 @@ int Comm::get_msg(std::string& data) {
     this->clean_buffer();
 
     return 0;
+}
+
+void Comm::send_msg(std::string data) {
+    data += ENDLINE;
+
+    uart_puts(this->uart_num ? uart1 : uart0, data.c_str());
 }
 
 void Comm::split(std::string str, char sep, std::vector<std::string>& buffer) {
