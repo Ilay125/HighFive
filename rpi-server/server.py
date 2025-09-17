@@ -6,7 +6,7 @@ import threading
 
 ser = serial.Serial('/dev/serial0', 115200, timeout=1)
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode="threading")
 
 # DATA PASS BETWEEN THREADS
 DATA = {"us_dist": 0}
@@ -18,7 +18,7 @@ def process_msg(msg_buffer):
     for msg in msg_buffer:
         if msg.startswith("us"):
             DATA["us_dist"] = round(float(msg[2:]), 3)
-            
+
     socketio.emit('update', DATA, broadcast=True)
 
 
@@ -70,5 +70,9 @@ def main():
 
 
 if __name__ == '__main__':
-    t = threading.Thread(target=uart_listener).start()
-    socketio.run(app, host="0.0.0.0", port=5000, debug=True)
+    threading.Thread(target=uart_listener, daemon=True).start()
+    socketio.run(app,
+                 host="0.0.0.0",
+                 port=5000,
+                 debug=True,
+                 allow_unsafe_werkzeug=True)
