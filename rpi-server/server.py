@@ -13,7 +13,7 @@ app = Flask(__name__)
 socketio = SocketIO(app, async_mode="eventlet")
 
 # DATA PASS BETWEEN THREADS
-DATA = {"us_dist": 0}
+DATA = {"us_dist": "-1"}
 
 # CONST
 END_LINE = '|'
@@ -25,6 +25,7 @@ def process_msg(msg_buffer):
 
     print(DATA)
     socketio.emit('update', DATA)
+    socketio.sleep(0)
 
 
 def uart_listener():
