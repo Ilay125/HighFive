@@ -18,7 +18,8 @@ def process_msg(msg_buffer):
     for msg in msg_buffer:
         if msg.startswith("us"):
             DATA["us_dist"] = round(float(msg[2:]), 3)
-            socketio.emit('us_update', DATA["us_dist"])
+            
+    socketio.emit('update', DATA, broadcast=True)
 
 
 def uart_listener():
@@ -70,4 +71,4 @@ def main():
 
 if __name__ == '__main__':
     t = threading.Thread(target=uart_listener).start()
-    socketio.run(host="0.0.0.0", port=5000, debug=True)
+    socketio.run(app, host="0.0.0.0", port=5000, debug=True)

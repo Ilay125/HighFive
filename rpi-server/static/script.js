@@ -35,6 +35,6 @@ sleep_btn.onclick = function() {
 /* SOCKETIO LOGIC FOR SENSOR */
 let socket = io();
 
-socket.on('us_update', function(data) {
-    document.getElementById('us_data').innerHTML = data;
+socket.on('update', function(data) {
+    document.getElementById('us_data').innerHTML = data.us_dist;
 });
