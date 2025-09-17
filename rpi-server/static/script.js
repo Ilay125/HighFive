@@ -36,5 +36,6 @@ sleep_btn.onclick = function() {
 let socket = io();
 
 socket.on('update', function(data) {
+    console.log(data);
     document.getElementById('us_data').innerHTML = data.us_dist;
 });

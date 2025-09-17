@@ -6,7 +6,7 @@ import threading
 
 ser = serial.Serial('/dev/serial0', 115200, timeout=1)
 app = Flask(__name__)
-socketio = SocketIO(app, async_mode="threading")
+socketio = SocketIO(app, async_mode="eventlet")
 
 # DATA PASS BETWEEN THREADS
 DATA = {"us_dist": 0}
@@ -19,7 +19,7 @@ def process_msg(msg_buffer):
         if msg.startswith("us"):
             DATA["us_dist"] = round(float(msg[2:]), 3)
 
-    socketio.emit('update', DATA, broadcast=True)
+    socketio.emit('update', DATA)
 
 
 def uart_listener():
