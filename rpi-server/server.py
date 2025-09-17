@@ -19,6 +19,7 @@ def process_msg(msg_buffer):
         if msg.startswith("us"):
             DATA["us_dist"] = round(float(msg[2:]), 3)
 
+    print(DATA)
     socketio.emit('update', DATA)
 
 
@@ -65,8 +66,7 @@ def main():
     return render_template("index.html", 
                            up_val=str(up_val),
                            down_val=str(down_val),
-                           fast_val=fast_val,
-                           us_dist=DATA["us_dist"])
+                           fast_val=fast_val)
 
 
 if __name__ == '__main__':
