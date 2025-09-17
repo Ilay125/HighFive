@@ -1,3 +1,7 @@
+# Desperate try to fix websocket
+import eventlet
+eventlet.monkey_patch()
+
 from flask import Flask, redirect, url_for, request, render_template
 from flask_socketio import SocketIO
 import serial
@@ -17,7 +21,7 @@ END_LINE = '|'
 def process_msg(msg_buffer):
     for msg in msg_buffer:
         if msg.startswith("us"):
-            DATA["us_dist"] = round(float(msg[2:]), 3)
+            DATA["us_dist"] = msg[2:]
 
     print(DATA)
     socketio.emit('update', DATA)
@@ -45,6 +49,11 @@ def fancy_uart(*args):
     ser.write(f"{up_val},{down_val},{fast_val}|".encode())
     time.sleep(0.5)
     print(f"up servo={up_val}, down servo={down_val}, fast={fast_val}")
+
+@socketio.on('connect')
+def handle_connect():
+    print("New client has arrived!")
+    socketio.emit('update', DATA)
 
     
 @app.route('/', methods=["POST", "GET"])

@@ -35,6 +35,11 @@ sleep_btn.onclick = function() {
 /* SOCKETIO LOGIC FOR SENSOR */
 let socket = io();
 
+socket.on('connect', () => {
+    console.log("Socket connected:", socket.id);
+});
+
+
 socket.on('update', function(data) {
     console.log(data);
     document.getElementById('us_data').innerHTML = data.us_dist;
