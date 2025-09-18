@@ -24,7 +24,7 @@ def process_msg(msg_buffer):
             DATA["us_dist"] = msg[2:]
 
     print(DATA)
-    socketio.emit('update', DATA)
+    socketio.emit('update', DATA, namespace='/')
     socketio.sleep(0)
 
 

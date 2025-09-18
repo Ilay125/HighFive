@@ -26,7 +26,6 @@
 void rest_mode(Servo& up, Servo& down) {
     up.set_angle(15, false);
     down.set_angle(0, false);
-    sleep_ms(1000);
 }
 
 int main()
@@ -49,8 +48,6 @@ int main()
     printf("STARTING A LOOP\n");
     // MAIN LOOP - LISTENER
     std::vector<std::string> data;
-
-    //comm.send_msg("HELLUR");
 
     while (1) {
         std::string line;
@@ -82,16 +79,29 @@ int main()
         }
 
         // NOTHING
+
+        
         std::string dist_str = dist.measure_to_str(3, "us"); 
 
         printf("sending %s\n", dist_str.c_str());
         comm.send_msg(dist_str);
 
-        sleep_ms(1000);
+        float l = dist.measure();
+
+        if (l >= 25) {
+            rest_mode(servo_up, servo_down);
+        } else {
+            float alpha_f = asin(l / (2 * PEN_LEN)) * 180 / 3.14;
+            int alpha = round(alpha_f);
+            
+            servo_down.set_angle(alpha);
+            servo_up.set_angle(2 * alpha);
+            sleep_ms(1000);
+        }
+
+        sleep_ms(500);
+
     }
 
-
-
-    
     return 0;
 }

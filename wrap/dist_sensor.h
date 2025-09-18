@@ -4,7 +4,7 @@
 #include <string>
 
 
-#define SPEED_OF_SOUND 34300 // [cm/s] 
+#define SPEED_OF_SOUND 0.0343 // [cm/us] 
 #define MAX_DIST 25 // [cm]
 
 class DistSensor {
