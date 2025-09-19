@@ -50,6 +50,7 @@ int main()
     std::vector<std::string> data;
 
     bool is_override = false;
+
     while (1) {
         std::string line;
         int get_msg_code = comm.get_msg(line);
@@ -71,7 +72,8 @@ int main()
             int down_angle = std::stoi(data.at(1));
             int is_fast = std::stoi(data.at(2));
             is_override = std::stoi(data.at(3));
-
+            
+            printf("ovverride=%d", is_override);
             servo_up.set_angle(up_angle, is_fast);
             servo_down.set_angle(down_angle, is_fast);
 
@@ -85,7 +87,7 @@ int main()
         if (!is_override) {
             std::string dist_str = dist.measure_to_str(3, "us"); 
 
-            printf("sending %s\n", dist_str.c_str());
+            //printf("sending %s\n", dist_str.c_str());
             comm.send_msg(dist_str);
 
             float l = dist.measure();
