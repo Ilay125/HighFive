@@ -49,6 +49,7 @@ int main()
     // MAIN LOOP - LISTENER
     std::vector<std::string> data;
 
+    bool is_override = false;
     while (1) {
         std::string line;
         int get_msg_code = comm.get_msg(line);
@@ -69,6 +70,7 @@ int main()
             int up_angle = std::stoi(data.at(0));
             int down_angle = std::stoi(data.at(1));
             int is_fast = std::stoi(data.at(2));
+            is_override = std::stoi(data.at(3));
 
             servo_up.set_angle(up_angle, is_fast);
             servo_down.set_angle(down_angle, is_fast);
@@ -80,27 +82,27 @@ int main()
 
         // NOTHING
 
-        
-        std::string dist_str = dist.measure_to_str(3, "us"); 
+        if (!is_override) {
+            std::string dist_str = dist.measure_to_str(3, "us"); 
 
-        printf("sending %s\n", dist_str.c_str());
-        comm.send_msg(dist_str);
+            printf("sending %s\n", dist_str.c_str());
+            comm.send_msg(dist_str);
 
-        float l = dist.measure();
+            float l = dist.measure();
 
-        if (l >= 25) {
-            rest_mode(servo_up, servo_down);
-        } else {
-            float alpha_f = asin(l / (2 * PEN_LEN)) * 180 / 3.14;
-            int alpha = round(alpha_f);
-            
-            servo_down.set_angle(alpha);
-            servo_up.set_angle(2 * alpha);
-            sleep_ms(1000);
+            if (l >= 25) {
+                rest_mode(servo_up, servo_down);
+            } else {
+                float alpha_f = asin(l / (2 * PEN_LEN)) * 180 / 3.14;
+                int alpha = round(alpha_f);
+                
+                servo_down.set_angle(alpha);
+                servo_up.set_angle(2 * alpha);
+                sleep_ms(1000);
+            }
+
+            sleep_ms(500);
         }
-
-        sleep_ms(500);
-
     }
 
     return 0;

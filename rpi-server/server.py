@@ -46,10 +46,10 @@ def uart_listener():
         process_msg(data_buff)
 
 def fancy_uart(*args):
-    up_val, down_val, fast_val = args
-    ser.write(f"{up_val},{down_val},{fast_val}|".encode())
+    up_val, down_val, fast_val, override = args
+    ser.write(f"{up_val},{down_val},{fast_val},{override}|".encode())
     time.sleep(0.5)
-    print(f"up servo={up_val}, down servo={down_val}, fast={fast_val}")
+    print(f"up servo={up_val}, down servo={down_val}, fast={fast_val}, override={override}")
 
 @socketio.on('connect')
 def handle_connect():
@@ -63,7 +63,8 @@ def main():
         up_val = int(request.form["up_slider"])
         down_val = int(request.form["down_slider"])
         fast_val = request.form.get("fast_chk") is not None
-        fancy_uart(up_val, down_val, fast_val + 0)
+        override_val = request.form.get("override_chk") is not None
+        fancy_uart(up_val, down_val, fast_val + 0, override_val + 0)
 
     else: # on GET
 
@@ -71,12 +72,14 @@ def main():
         up_val = 90
         down_val = 90
         fast_val = False
+        override_val = False
         
 
     return render_template("index.html", 
                            up_val=str(up_val),
                            down_val=str(down_val),
-                           fast_val=fast_val)
+                           fast_val=fast_val,
+                           override_val=override_val)
 
 
 if __name__ == '__main__':

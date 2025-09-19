@@ -19,7 +19,11 @@
          
          <input type = "range" min="15" max= "180" name="down_slider" id="down_slider" value="{{ down_val }}" />
          
-         <p><input type="checkbox" name="fast_chk" {% if fast_val %}checked{% endif %}>Fast<p>
+         <p>
+            <span><input type="checkbox" name="fast_chk" {% if fast_val %}checked{% endif %}>Fast</span>
+            <span><input type="checkbox" name="override_chk" {% if override_val %}checked{% endif %}>Override</span>
+         
+         </p>
 
          <p>
             <input type = "submit" value = "move!" />
