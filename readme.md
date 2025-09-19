@@ -8,7 +8,7 @@ _"But wouldn’t it interrupt my intense gaming session?"_ Nope! Its exquisite d
 
 For devs who want full control of each motor or access to raw distance data, there’s even a **web-based control panel** — just connect to it, and everything is at your fingertips.
 
-**LINK FOR DEMO:**
+**LINK FOR DEMO:** <br />
 <a href="https://www.youtube.com/watch?v=fgNwqBOAN3E">
   <img src="https://img.youtube.com/vi/fgNwqBOAN3E/maxresdefault.jpg" width="480">
 </a>
